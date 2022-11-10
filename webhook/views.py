@@ -3,6 +3,12 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from gtts import gTTS
 import json
+from .eliza import Eliza
+from pprint import pprint
+import requests
+
+eliza = Eliza()
+eliza.load('./webhook/doctor.txt')
 
 def convertToSpeech(input_text, id):
     language = 'en'
@@ -13,32 +19,35 @@ def convertToSpeech(input_text, id):
 '''
 {"contacts": [{"profile": {"name": "Jaynam Modi"}, "wa_id": "917990326788"}], 
 "messages": [{"from": "917990326788", "id": "ABEGkXmQMmeIAhCNtbem7x5-UKxpF_sdPZxj", 
-"text": {"body": "hellooo"}, 
-"timestamp": "1667998564", "type": "text"}]}'
+    "text": {"body": "hellooo"}, 
+    "timestamp": "1667998564", "type": "text"}]}'
 '''
 
 
 @csrf_exempt
 def webhook(request):
     if request.method == 'POST':
-        print(" > Data received from Webhook is: ", request.body)
+        print(" > Data received from Webhook is: ")
+        # pprint(request.body)
         data_sent = json.loads(request.body)
-        payload = {
-                "company-name" : "kwiqreply",
-                "event-data": {
-                    "event-name" : "basic_kwiq_tmp",
-                    "event-id": "2817"
-                },
-                "parameters":{
-                    "phone-number":"917990326788",
-                    "variables":[data_sent["contacts"][0]['profile']['name'],"KwiqReply"],
-                    "url-variable":"url-endpoint",
-                    "header" : {
-                    #     "link" : "<If it contains media then link of media>",
-                    # "filename":"<required if the media type is of document type>"
-                    }
-                }
+        pprint(data_sent)
+
+        url = "https://app.kwiqreply.io/api/messages"
+
+        payload = json.dumps({
+            "to": data_sent["contacts"][0]["wa_id"],
+            "type": "text",
+            "text": {
+                "body": eliza.generateResponse(data_sent["messages"][0]["text"]["body"])
             }
+        })
+        headers = {
+            'Authorization': 'Bearer 665ab736-26d3-4d7d-ba98-879a2e37db8e',
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        print(response.text)
         return HttpResponse("Webhook received!")
     elif request.method == 'GET':
         print(" > Get request received")
