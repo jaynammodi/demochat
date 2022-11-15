@@ -1,0 +1,168 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+from rest_framework.response import Response
+from django.views.decorators.csrf import csrf_exempt
+# from gtts import gTTS
+import json
+from pprint import pprint
+import requests
+from .models import Customer
+from .serializers import CustomerSerializer
+# from filestack import Client
+
+# client = Client("Ax6UCGIqiRRKyjRjHAYEwz")
+
+flag = 0
+form_data = {
+            "name":"",
+            "email":"",
+            "phone":""
+        }
+
+def addItem(inp):
+    serializer = CustomerSerializer(data = json.dumps(inp))
+    if serializer.is_valid():
+        print(" > Valid Data being stored:")
+        serializer.save()
+        return True
+    else:
+        print(" > Invalid data")
+        print(serializer.data())
+    return False
+
+# def getItems(requests):
+
+
+@csrf_exempt
+def webhook(request):
+    global flag, form_data
+    if request.method == 'POST':
+        print(" > Data received from Webhook is: ")
+        # pprint(request.body)
+        data_sent = json.loads(request.body)
+        headers = {
+                    'Authorization': 'Bearer 665ab736-26d3-4d7d-ba98-879a2e37db8e',
+                    'Content-Type': 'application/json'
+                }
+        pprint(data_sent)
+        if "contacts" in data_sent:
+            url = "https://app.kwiqreply.io/api/messages"
+            try:
+                msg = data_sent["messages"][0]["text"]["body"].lower()
+            except KeyError:
+                msg = data_sent["messages"][0]["interactive"]["button_reply"]['title'].lower()
+            msg_to = data_sent["contacts"][0]["wa_id"]
+            if msg_to != "917990326788":
+                return HttpResponse(" > Not your number")
+            if flag == 0:
+                payload = json.dumps({
+                    "to": msg_to,
+                    "type": "text",
+                    "text": {
+                        "body": "Hi, Welcome to whatever! Please enter Your Name:"
+                    }
+                })
+                response = requests.request("POST", url, headers=headers, data=payload)
+
+                print(response.text)
+                flag += 1
+                return HttpResponse("Name Asked!")
+            elif flag == 1:
+                form_data["name"] = msg
+                payload = json.dumps({
+                    "to": msg_to,
+                    "type": "text",
+                    "text": {
+                        "body": "Please enter Your Email:"
+                    }
+                })
+                response = requests.request("POST", url, headers=headers, data=payload)
+                print(response.text)
+                flag += 1
+                return HttpResponse("Name Received, Email Asked!")
+            elif flag == 2:
+                form_data["email"] = msg
+                payload = json.dumps({
+                    "to": msg_to,
+                    "type": "text",
+                    "text": {
+                        "body": "Please enter Your Phone Number:"
+                    }
+                })
+                response = requests.request("POST", url, headers=headers, data=payload)
+                print(response.text)
+                flag += 1
+                return HttpResponse("Email Received, Phone Asked!")
+            elif flag == 3:
+                form_data["phone"] = msg.strip()
+
+                payload = json.dumps({
+                "to": msg_to,
+                "recipient_type": "individual",
+                "type": "interactive",
+                "interactive": {
+                    "type": "button",
+                    "header": {
+                    "type": "text",
+                    "text": "Verify entered Info."
+                    },
+                    "body": {
+                    "text": """Hey there, Please check your entered details and make sure that we recorded them correctly:\n > Name :  {} \n > Email : {} \n > Phone : {}""".format(form_data["name"], form_data["email"], form_data["phone"])
+                    },
+                    "footer": {
+                    "text": "Please confirm they're correct."
+                    },
+                    "action": {
+                    "buttons": [
+                        {
+                        "type": "reply",
+                        "reply": {
+                            "id": "No",
+                            "title": "No"
+                        }
+                        },
+                        {
+                        "type": "reply",
+                        "reply": {
+                            "id": "Yes",
+                            "title": "Yes"
+                        }
+                        }
+                    ]
+                    }
+                }
+                })
+                response = requests.request("POST", url, headers=headers, data=payload)
+                print(response.text)
+                flag += 1
+                return HttpResponse("Phone Received, Confirmation asked!")
+            elif flag == 4:
+                print(data_sent)
+                if msg == "yes":
+                    addItem(form_data)
+                    payload = json.dumps({
+                        "to": msg_to,
+                        "type": "text",
+                        "text": {
+                            "body": "Thank you for your prompt response."
+                        }
+                    })
+                    response = requests.request("POST", url, headers=headers, data=payload)
+                    print(response.text)
+                    flag = 0
+                elif msg == "no":
+                    payload = json.dumps({
+                        "to": msg_to,
+                        "type": "text",
+                        "text": {
+                            "body": "Reiterating through the questions, Please enter your name:"
+                        }
+                    })
+                    response = requests.request("POST", url, headers=headers, data=payload)
+                    print(response.text)
+                    flag = 1
+
+        return HttpResponse("Webhook received!")
+    elif request.method == 'GET':
+        print(" > Get request received")
+        return HttpResponse("Webhook received!")
