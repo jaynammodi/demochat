@@ -8,7 +8,8 @@ from pprint import pprint
 import requests
 import openai
 
-openai.api_key = "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"
+openai.api_key = "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"
+# openai.api_key = "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"
 #os.getenv("OPENAI_API_KEY")
 
 # conversation_history = """
@@ -24,33 +25,95 @@ openai.api_key = "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"
 # Marv: I’m not sure. I’ll ask my friend Google.
 # You: 
 # """
+images = {
+    "img001": "https://assets.myntassets.com/dpr_1.5,q_60,w_400,c_limit,fl_progressive/assets/images/18458460/2022/5/28/c28d223f-6a82-46be-8922-6a21172bd2841653714541319AfroJackWomenWhiteSneakers1.jpg",
+    "img002": "https://cdn-fnknc.nitrocdn.com/jwqHRGAzpUgGskUSHlppNQzwuXgXIKwg/assets/static/optimized/rev-2f126d7/wp-content/uploads/2022/02/CommonProjects_BestBlackSneakers--675x333.jpg",
+    "img003": "https://m.media-amazon.com/images/I/81st5nBcnnL._UY695_.jpg",
+    
+}
 
-summarization_api_key = "6562713e-5f93-41cd-870c-c0c9144a511b"
+conversation_history = """Maverick is a an AI chatbot that answers questions with sincere responses:
+User: Hi maverick, how are you?
+Maverick: Hi, I am doing well. What are your questions?
+User:"""
 
-conversation_history = """
-Marv is a friendly chatbot that answers questions with cheerful responses based on given input, read the following article and continue the conversation that follows:
-Article:
-Consumer inflation eased in October. The year-over-year was the smallest since the start of the year. The inflation numbers were lower than what most economists had expected. Let us look at the details and what it means for investors. The Bureau of Labor Statistics released the CPI data for October - the US inflation has come to 7.7%. In September, inflation was 8.2%, while in August, the annual increase was 8.3%. The CPI for all Urban Consumers (CPI-U) increased by 0.4% in October on a seasonally adjusted basis (same increase as September). The all-items index increased by 7.7% before the seasonal adjustment. The increase in October is the smallest 12-month increase since the start of 2022. All items, excluding the food and energy index (called core inflation), increased by 6.3%. The expectation was the core inflation would increase by 6.5%, while the headline inflation would increase by 7.9%. Federal Reserve may slow rate hikes: The Federal Reserve said in the last meeting that it plans to bring inflation under control, and for that, it will continue to increase rates. However, now that inflation has lowered, even though, marginally, it opens the way for the Fed to slow its aggressive interest rate hikes. If that happens, the equity market will benefit.
+# conversation_history = """
 
-Stocks and crypto surge: Post the inflation numbers and expectation that Fed will now try to avoid a hard landing on the economy, the US equity market surged. The major indices reported their best daily gains since 2020. The NASDAQ rallied over 7%. Even the largest cryptocurrency recovered some of its losses and was up 3%, nearing the $18000-mark.
+# Stock:[
+#     {
+#     "Product Name": "White Canvas Sneakers",
+#     "Sizes":[43, 44, 45, 46, 47],
+#     "Store Page": "https://shopifty.org/url",
+#     "Price": 899,
+#     "Category": "Shoes",
+#     "ImageID": "img001"
+#     },
+#     {
+#     "Product Name": "Black Canvas Sneakers",
+#     "Sizes":[43, 44, 47],
+#     "Store Page": "https://shopifty.org/url2",
+#     "Price": 899,
+#     "Category": "Shoes",
+#     "ImageID": "img002"
+#     },
+#     }
+#     "Product Name": "Grey Canvas Sneakers",
+#     "Sizes":[44, 45, 46],
+#     "Store Page": "https://shopifty.org/url3",
+#     "Price": 899,
+#     "Category": "Shoes",
+#     "ImageID": "img003"
+#     }
+# ]
+# Daisy is an AI assistant that helps a sneaker store by talking to its customers. You can only ask it questions about the products in stock otherwise it responds with negation.
+# It starts by asking for the customers name, email and phone number and helps them select the best products from the ones in stock for their needs.
 
-Dollar index fall: The US dollar index dipped by 1.96%, with the euro climbing by 1.55%. Notably, the dollar also tumbled against the Japanese yen, making a move toward its biggest one-day dive since 2016. 
+# It starts the conversation with:
+# User: Hi 
+# Daisy: Hello, how are you? What's your name?
+# User: My name is John
+# Daisy: Hi John, can I have your email address? (ask repeatedly if not provided)
+# User: My email is someemail@whatever.com
+# Daisy: Thanks John, can I have your phone number? (ask repeatedly if not provided)
+# User: My phone number is 1234567890
+# Daisy: Thank you so much, what can i help you with?
 
-Crude oil price increase: Crude oil prices nudged upward due to the better-than-expected US inflation numbers. Hopes for steady demand take rounds, which is expected to offset the impact of Covid restrictions in China. US crude rose by over 1% and traded around $86.8 per barrel late Thursday.
 
-What should investors do?
-Post the October inflation numbers, the US market rallied, and the Indian market did the same on Friday. However, investors should not try to time the market, assuming the rally will continue. Experts suggest, amid high interest rate environment, growth stocks in cloud, e-tailers and software sectors may continue to remain under pressure due to concerns over their valuation. Companies which can maintain healthy margins due to their pricing power will be relative outperformers. 
+# When asked for the catalog, it lists the Names of the products in stock mentioned and their prices.
+# User: What is the catalog?
+# Daisy: Here is the catalog: Black Sneakers(899), White Sneakers(899) and Grey Sneakers(899)
 
-Avoid lump sum allocation and adopt a more staggered approach while investing in equities over the next few months. US stocks SIP’s are the best way to take advantage of volatility. Invest through INDmoney at zero additional cost.
+# When asked what she has in stock, it lists the categories of the products she has in stock.
+# User: what do you have in stock?
+# Daisy: I have only Shoes in stock.
 
-This is not an investment advisory. The blog is for information purposes only. Investments in the securities market are subject to market risks, read all the related documents carefully before investing. Past performance is not indicative of future returns. Please consider your specific investment requirements, risk tolerance, goal, time frame, risk and reward balance, and the cost associated with the investment before choosing a fund, or designing a portfolio that suits your needs. The performance and returns of any investment portfolio can neither be predicted nor guaranteed. 
+# it helps the user check out once they've selected a product by redirecting them to the store page.
+# User: I want to buy the White Sneakers.
+# Daisy: Great, here is the link to the store page: https://shopifty.org/url [ImageID=img001]
 
-Human: Hi marv, how are you?
-Marv: Hello there, how may I help you?
-Human: """
+# example:
+# User: Hi, how are you?
+# Daisy: I am doing well, Thanks for asking, May I know your name?
+# User: My name's Jaynam, can you help me?
+# Daisy: Hi Jaynam! Sure, what are you looking for today?
+# User: I am looking for canvas sneakers
+# Daisy: Here are our canvas sneakers. We have black ones and
+# white ones.
+# User: Can you show me the white ones?
+# Daisy: https://shopifty.org/url [ImageID=img001]
+# User: Can i get the black ones instead?
+# Daisy: https://shopifty.org/url2 [ImageID=img002]
+# User:thank you for helping me out
+# Daisy: You're welcome, Jaynam!
+
+
+# NEW CONVERSATION STARTS HERE
+# User: 
+# """
+
 def generatePrompt(userInput):
     global conversation_history
-    conversation_history = conversation_history + userInput.strip() + "\nMarv: "
+    conversation_history = conversation_history + userInput.strip() + "\nDaisy: "
     return conversation_history
 
 def generateResponse(userInput):
@@ -63,7 +126,7 @@ def generateResponse(userInput):
         temperature=0.6
     )
     reply = response["choices"][0]["text"].strip()
-    conversation_history = conversation_history + reply + "\nYou: "
+    conversation_history = conversation_history + reply + "\nUser: "
     # print(" !> debug:  ", )
     return reply
 
@@ -91,13 +154,28 @@ def webhook(request):
                 return HttpResponse(" > Not your number")
             print(data_sent)
             if msg != "":
-                payload = json.dumps({
-                    "to": msg_to,
-                    "type": "text",
-                    "text": {
-                        "body": generateResponse(msg)
-                    }
-                })
+                raw_msg = generateResponse(msg)
+                if "ImageID" in raw_msg:
+                    clean_txt, imgID = raw_msg.split("[ImageID=")
+                    imgID = imgID[:-1]
+                    print(clean_txt, imgID)
+                    payload = json.dumps({
+                        "to": msg_to,
+                        "type": "image",
+                        "recipient_type": "individual",
+                        "image": {
+                            "link": images[imgID],
+                            "caption": clean_txt
+                        }
+                    })
+                else:
+                    payload = json.dumps({
+                        "to": msg_to,
+                        "type": "text",
+                        "text": {
+                            "body": raw_msg
+                        }
+                    })
                 response = requests.request("POST", url, headers=headers, data=payload)
                 print(response.text)
         return HttpResponse("Webhook received!")

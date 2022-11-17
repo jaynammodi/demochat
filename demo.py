@@ -2,7 +2,9 @@ import os
 
 import openai
 
-openai.api_key = "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"
+# openai.api_key = "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"
+openai.api_key = "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"
+
 #os.getenv("OPENAI_API_KEY")
 
 conversation_history = """
