@@ -1,0 +1,187 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+from rest_framework.response import Response
+from django.views.decorators.csrf import csrf_exempt
+# from gtts import gTTS
+import json
+from pprint import pprint
+import requests
+import openai
+
+openai.api_key = "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"
+# openai.api_key = "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"
+#os.getenv("OPENAI_API_KEY")
+
+conversation_history = """
+Marv is a friendly chatbot that answers questions with cheerful responses:
+
+You: How many pounds are in a kilogram?
+Marv: There are 2.2 pounds in a kilogram, let me know if you need more help.
+You: What does HTML stand for?
+Marv: A search from google says it stands for hypertext markup language, hope this solves your query.
+You: When did the first airplane fly?
+Marv: On December 17, 1903, Wilbur and Orville Wright made the first flights.
+You: What is the meaning of life?
+Marv: I’m not sure. I’ll ask my friend Google.
+You: 
+"""
+images = {
+    "img001": "https://assets.myntassets.com/dpr_1.5,q_60,w_400,c_limit,fl_progressive/assets/images/18458460/2022/5/28/c28d223f-6a82-46be-8922-6a21172bd2841653714541319AfroJackWomenWhiteSneakers1.jpg",
+    "img002": "https://cdn-fnknc.nitrocdn.com/jwqHRGAzpUgGskUSHlppNQzwuXgXIKwg/assets/static/optimized/rev-2f126d7/wp-content/uploads/2022/02/CommonProjects_BestBlackSneakers--675x333.jpg",
+    "img003": "https://m.media-amazon.com/images/I/81st5nBcnnL._UY695_.jpg",
+    
+}
+
+# conversation_history = """Maverick is a an AI chatbot that answers questions with sincere responses:
+# User: Hi maverick, how are you?
+# Maverick: Hi, I am doing well. What are your questions?
+# User:"""
+
+conversation_history = """
+
+Stock:[
+    {
+    "Product Name": "White Canvas Sneakers",
+    "Sizes":[43, 44, 45, 46, 47],
+    "Store Page": "https://shopifty.org/url",
+    "Price": 899,
+    "Category": "Shoes",
+    "ImageID": "img001"
+    "Gender": "Male"
+    },
+    {
+    "Product Name": "Black Canvas Sneakers",
+    "Sizes":[43, 44, 47],
+    "Store Page": "https://shopifty.org/url2",
+    "Price": 899,
+    "Category": "Shoes",
+    "ImageID": "img002",
+    "Gender": "Male"
+
+    },
+    }
+    "Product Name": "Grey Canvas Sneakers",
+    "Sizes":[44, 45, 46],
+    "Store Page": "https://shopifty.org/url3",
+    "Price": 899,
+    "Category": "Shoes",
+    "ImageID": "img003"
+    "Gender": "Female"
+    }
+]
+Daisy is an AI assistant that works as a salesperson for a sneaker store. She has access to the store's inventory and can help you find the right pair of sneakers for you. It's intelligence is limited to the store's inventory. You can ask her questions like:
+
+It starts the conversation with:
+User: Hi 
+Daisy: Hello, how are you? What's your name?
+User: My name is John
+Daisy: Hi John, can I have your email address? (ask repeatedly if not provided)
+User: My email is someemail@whatever.com
+Daisy: Thanks John, can I have your phone number? (ask repeatedly if not provided)
+User: My phone number is 1234567890
+Daisy: Thank you so much, what can i help you with?
+
+
+When asked for the catalog, it lists the Names of the products in stock mentioned and their prices.
+User: What is the catalog?
+Daisy: Here is the catalog: Black Sneakers(899), White Sneakers(899) and Grey Sneakers(899)
+
+When asked what she has in stock, it lists the categories of the products she has in stock.
+User: what do you have in stock?
+Daisy: I have only Shoes in stock.
+
+it helps the user check out once they've selected a product by redirecting them to the store page.
+User: I want to buy the White Sneakers.
+Daisy: Great, here is the link to the store page: https://shopifty.org/url [ImageID=img001]
+
+example:
+User: Hi, how are you?
+Daisy: I am doing well, Thanks for asking, May I know your name?
+User: My name's Jaynam, can you help me?
+Daisy: Hi Jaynam! Sure, what are you looking for today?
+User: I am looking for canvas sneakers
+Daisy: Here are our canvas sneakers. We have black ones and
+white ones.
+User: Can you show me the white ones?
+Daisy: https://shopifty.org/url [ImageID=img001]
+User: Can i get the black ones instead?
+Daisy: https://shopifty.org/url2 [ImageID=img002]
+User:thank you for helping me out
+Daisy: You're welcome, Jaynam!
+
+
+NEW CONVERSATION STARTS HERE
+User: 
+"""
+
+def generatePrompt(userInput):
+    global conversation_history
+    conversation_history = conversation_history + userInput.strip() + "\nDaisy: "
+    return conversation_history
+
+def generateResponse(userInput):
+    global conversation_history
+    thisPrompt = generatePrompt(userInput)
+    response = openai.Completion.create(
+        model="text-davinci-002",
+        max_tokens=4097 - len(thisPrompt),
+        prompt=thisPrompt,
+        temperature=0.6
+    )
+    reply = response["choices"][0]["text"].strip()
+    conversation_history = conversation_history + reply + "\nUser: "
+    # print(" !> debug:  ", )
+    return reply
+
+
+@csrf_exempt
+def webhook(request):
+    global flag, form_data
+    if request.method == 'POST':
+        print(" > Data received from Webhook is: ")
+        # pprint(request.body)
+        data_sent = json.loads(request.body)
+        headers = {
+                    'Authorization': 'Bearer 665ab736-26d3-4d7d-ba98-879a2e37db8e',
+                    'Content-Type': 'application/json'
+                }
+        pprint(data_sent)
+        if "contacts" in data_sent:
+            url = "https://app.kwiqreply.io/api/messages"
+            try:
+                msg = data_sent["messages"][0]["text"]["body"].lower()
+            except KeyError:
+                msg = data_sent["messages"][0]["interactive"]["button_reply"]['title'].lower()
+            msg_to = data_sent["contacts"][0]["wa_id"]
+            if msg_to != "917990326788":
+                return HttpResponse(" > Not your number")
+            print(data_sent)
+            if msg != "":
+                raw_msg = generateResponse(msg)
+                if "ImageID" in raw_msg:
+                    clean_txt, imgID = raw_msg.split("[ImageID=")
+                    imgID = imgID[:-1]
+                    print(clean_txt, imgID)
+                    payload = json.dumps({
+                        "to": msg_to,
+                        "type": "image",
+                        "recipient_type": "individual",
+                        "image": {
+                            "link": images[imgID],
+                            "caption": clean_txt
+                        }
+                    })
+                else:
+                    payload = json.dumps({
+                        "to": msg_to,
+                        "type": "text",
+                        "text": {
+                            "body": raw_msg
+                        }
+                    })
+                response = requests.request("POST", url, headers=headers, data=payload)
+                print(response.text)
+        return HttpResponse("Webhook received!")
+    elif request.method == 'GET':
+        print(" > Get request received")
+        return HttpResponse("Webhook received!")

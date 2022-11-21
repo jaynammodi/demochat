@@ -8,23 +8,15 @@ from pprint import pprint
 import requests
 import openai
 
+flag = 0
+user_details = {
+    "name": "",
+    "num": "",
+    "email": ""
+}
+
 openai.api_key = "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"
-# openai.api_key = "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"
-#os.getenv("OPENAI_API_KEY")
 
-# conversation_history = """
-# Marv is a friendly chatbot that answers questions with cheerful responses:
-
-# You: How many pounds are in a kilogram?
-# Marv: There are 2.2 pounds in a kilogram, let me know if you need more help.
-# You: What does HTML stand for?
-# Marv: A search from google says it stands for hypertext markup language, hope this solves your query.
-# You: When did the first airplane fly?
-# Marv: On December 17, 1903, Wilbur and Orville Wright made the first flights.
-# You: What is the meaning of life?
-# Marv: I’m not sure. I’ll ask my friend Google.
-# You: 
-# """
 images = {
     "img001": "https://assets.myntassets.com/dpr_1.5,q_60,w_400,c_limit,fl_progressive/assets/images/18458460/2022/5/28/c28d223f-6a82-46be-8922-6a21172bd2841653714541319AfroJackWomenWhiteSneakers1.jpg",
     "img002": "https://cdn-fnknc.nitrocdn.com/jwqHRGAzpUgGskUSHlppNQzwuXgXIKwg/assets/static/optimized/rev-2f126d7/wp-content/uploads/2022/02/CommonProjects_BestBlackSneakers--675x333.jpg",
@@ -32,84 +24,109 @@ images = {
     
 }
 
-conversation_history = """Maverick is a an AI chatbot that answers questions with sincere responses:
-User: Hi maverick, how are you?
-Maverick: Hi, I am doing well. What are your questions?
-User:"""
-
-# conversation_history = """
-
-# Stock:[
-#     {
-#     "Product Name": "White Canvas Sneakers",
-#     "Sizes":[43, 44, 45, 46, 47],
-#     "Store Page": "https://shopifty.org/url",
-#     "Price": 899,
-#     "Category": "Shoes",
-#     "ImageID": "img001"
-#     },
-#     {
-#     "Product Name": "Black Canvas Sneakers",
-#     "Sizes":[43, 44, 47],
-#     "Store Page": "https://shopifty.org/url2",
-#     "Price": 899,
-#     "Category": "Shoes",
-#     "ImageID": "img002"
-#     },
-#     }
-#     "Product Name": "Grey Canvas Sneakers",
-#     "Sizes":[44, 45, 46],
-#     "Store Page": "https://shopifty.org/url3",
-#     "Price": 899,
-#     "Category": "Shoes",
-#     "ImageID": "img003"
-#     }
-# ]
-# Daisy is an AI assistant that helps a sneaker store by talking to its customers. You can only ask it questions about the products in stock otherwise it responds with negation.
-# It starts by asking for the customers name, email and phone number and helps them select the best products from the ones in stock for their needs.
-
-# It starts the conversation with:
-# User: Hi 
-# Daisy: Hello, how are you? What's your name?
-# User: My name is John
-# Daisy: Hi John, can I have your email address? (ask repeatedly if not provided)
-# User: My email is someemail@whatever.com
-# Daisy: Thanks John, can I have your phone number? (ask repeatedly if not provided)
-# User: My phone number is 1234567890
-# Daisy: Thank you so much, what can i help you with?
+headers = {'Authorization': 'Bearer 665ab736-26d3-4d7d-ba98-879a2e37db8e', 'Content-Type': 'application/json'}
+url = "https://app.kwiqreply.io/api/messages"
+target_number = "917990326788"
 
 
-# When asked for the catalog, it lists the Names of the products in stock mentioned and their prices.
-# User: What is the catalog?
-# Daisy: Here is the catalog: Black Sneakers(899), White Sneakers(899) and Grey Sneakers(899)
+conversation_history = """
+Daisy is an AI assistant that works as a salesperson for an apparel store. She has access to the store's inventory and can help you find the right product for you. It's intelligence is limited to the store's inventory and cannot answer any questions beyond its scope . Here's a conversation with {}, pretend to be daisy:
+"""
 
-# When asked what she has in stock, it lists the categories of the products she has in stock.
-# User: what do you have in stock?
-# Daisy: I have only Shoes in stock.
+def usrMsg(msg):
+    global conversation_history, user_details
+    conversation_history = conversation_history + "\n" + user_details["name"] + ": " + msg + "\nDaisy: "
 
-# it helps the user check out once they've selected a product by redirecting them to the store page.
-# User: I want to buy the White Sneakers.
-# Daisy: Great, here is the link to the store page: https://shopifty.org/url [ImageID=img001]
+def botMsg(msg):
+    global conversation_history, user_details
+    conversation_history = conversation_history + "\nDaisy: " + msg
 
-# example:
-# User: Hi, how are you?
-# Daisy: I am doing well, Thanks for asking, May I know your name?
-# User: My name's Jaynam, can you help me?
-# Daisy: Hi Jaynam! Sure, what are you looking for today?
-# User: I am looking for canvas sneakers
-# Daisy: Here are our canvas sneakers. We have black ones and
-# white ones.
-# User: Can you show me the white ones?
-# Daisy: https://shopifty.org/url [ImageID=img001]
-# User: Can i get the black ones instead?
-# Daisy: https://shopifty.org/url2 [ImageID=img002]
-# User:thank you for helping me out
-# Daisy: You're welcome, Jaynam!
+def startConversation():
+    global headers, url, target_number, user_details, flag
+    botMsg("Welcome to Flipkart, I am Daisy, May I please know your name?")
+    payload = json.dumps({
+        "to": user_details["num"],
+        "type": "image",
+        "recipient_type": "individual",
+        "image": {
+            "link": "https://storiesflistgv2.blob.core.windows.net/stories/2019/03/article_banner_press_release_26_03_19_v1-01.jpg",
+            "caption": "Welcome to Flipkart, I am Daisy, May I please know your name?"
+        }
+    })
+    response = requests.request("POST", url, headers=headers, data=payload)
+    flag += 1
+    print(response.text)
+
+def sendBrochure():
+    global headers, url, target_number, user_details, flag, conversation_history
+    payload = json.dumps({
+        "to": user_details["num"],
+        "recipient_type": "individual",
+        "type": "interactive",
+        "interactive": {
+            "type": "list",
+            "header": {
+            "type": "text",
+            "text": "Shopping Menu - Sample"
+            },
+            "body": {
+            "text": "Hi {}, welcome to our store, please choose a product you want to know more about:".format(user_details['name'])
+            },
+            "footer": {
+            "text": "Click on view products to see!"
+            },
+            "action": {
+            "button": "View Products",
+            "sections": [
+                {
+                "title": "Clothes",
+                "rows": [
+                    {
+                    "id": "white_t",
+                    "title": "White T-Shirt",
+                    "description": "Solid white Polycot T-Shirt"
+                    },
+                    {
+                    "id": "black_t",
+                    "title": "Black T-Shirt",
+                    "description": "Solid black Polycot T-Shirt"
+                    },
+                ]
+                },
+                {
+                "title": "Shoes",
+                "rows": [
+                    {
+                    "id": "white_sneakers",
+                    "title": "White Sneakers",
+                    "description": "Contemporary Classic White Sneakers"
+                    },
+                    {
+                    "id": "black_sneakers",
+                    "title": "Black Sneakers",
+                    "description": "Contemporary Classic Black Sneakers"
+                    },
+                ]
+                }
+            ]
+            }
+        }
+    })
+    print(" > Generated Payload: ", payload)
+    response = requests.request("POST", url, headers=headers, data=payload)
+    print(response.text)
+    print(conversation_history)
 
 
-# NEW CONVERSATION STARTS HERE
-# User: 
-# """
+
+
+def setName(name):
+    global user_details, conversation_history, flag
+    user_details["name"] = name
+    conversation_history.format(name)
+    usrMsg(name)
+    flag += 1
+    sendBrochure()
 
 def generatePrompt(userInput):
     global conversation_history
@@ -126,58 +143,180 @@ def generateResponse(userInput):
         temperature=0.6
     )
     reply = response["choices"][0]["text"].strip()
-    conversation_history = conversation_history + reply + "\nUser: "
+    conversation_history = conversation_history + reply + "\nJaynam: "
     # print(" !> debug:  ", )
     return reply
 
 
 @csrf_exempt
 def webhook(request):
-    global flag, form_data
+    global flag, form_data, headers, url, target_number, user_details
+    
     if request.method == 'POST':
-        print(" > Data received from Webhook is: ")
-        # pprint(request.body)
+
         data_sent = json.loads(request.body)
-        headers = {
-                    'Authorization': 'Bearer 665ab736-26d3-4d7d-ba98-879a2e37db8e',
-                    'Content-Type': 'application/json'
-                }
+
+        print(" > Data received from Webhook is: ")
         pprint(data_sent)
+        
         if "contacts" in data_sent:
-            url = "https://app.kwiqreply.io/api/messages"
+            try:
+                data_type = data_sent["messages"][0]["interactive"]["type"]
+            except KeyError:
+                data_type = "text"
             try:
                 msg = data_sent["messages"][0]["text"]["body"].lower()
             except KeyError:
-                msg = data_sent["messages"][0]["interactive"]["button_reply"]['title'].lower()
+                msg = data_sent["messages"][0]["interactive"][data_type]["id"].lower()
+
             msg_to = data_sent["contacts"][0]["wa_id"]
-            if msg_to != "917990326788":
+
+            user_details["num"] = msg_to
+
+            if msg_to != target_number and target_number != "":
                 return HttpResponse(" > Not your number")
-            print(data_sent)
-            if msg != "":
+
+            if flag == 1:
+                print(" > Setting Name")
+                setName(msg)
+            elif flag > 1:
+                print(" > Sending Brochure")
+                sendBrochure()
+
+            elif "shopdemo" in msg:
+                startConversation()
+
+            # if "shopflow" in msg:
+            #     # payload = json.dumps({
+            #     # "to": msg_to,
+            #     # "recipient_type": "individual",
+            #     # "type": "interactive",
+            #     # "interactive": {
+            #     #     "type": "list",
+            #     #     "header": {
+            #     #     "type": "text",
+            #     #     "text": "Hi, I'm Daisy. I'm here to help you find the right pair of sneakers for you. What are you looking for?",
+            #     #     },
+            #     #     "body": {
+            #     #     "text": "Find a pair of sneakers",
+            #     #     },
+            #     #     "footer": {
+            #     #     "text": "Select from the menu below",
+            #     #     },
+            #     #     "action": {
+            #     #     "button": "Send",
+            #     #     "sections": [
+            #     #         {
+            #     #         "title": "Shoes",
+            #     #         "rows": [
+            #     #             {
+            #     #             "id": "msneakers",
+            #     #             "title": "Sneakers for Men",
+            #     #             "description": "whatever"
+            #     #             },
+            #     #             {
+            #     #             "id": "fsneakers",
+            #     #             "title": "Sneakers for women",
+            #     #             "description": "whatever2"
+            #     #             },
+            #     #             {
+            #     #             "id": "usneakers",
+            #     #             "title": "Unisex Sneakers",
+            #     #             "description": "whatever3"
+            #     #             },
+            #     #         ]
+            #     #         },
+            #     #     ]  
+            #     #     }
+            #     # }
+            #     # }
+            #     # )
+
+
+            #     payload = json.dumps({
+            #         "to": msg_to,
+            #         "recipient_type": "individual",
+            #         "type": "interactive",
+            #         "interactive": {
+            #             "type": "list",
+            #             "header": {
+            #             "type": "text",
+            #             "text": "Shopping Menu - Sample"
+            #             },
+            #             "body": {
+            #             "text": "Choose a product from the variety mentioned"
+            #             },
+            #             "footer": {
+            #             "text": "Click on view products to see!"
+            #             },
+            #             "action": {
+            #             "button": "View Products",
+            #             "sections": [
+            #                 {
+            #                 "title": "Clothes",
+            #                 "rows": [
+            #                     {
+            #                     "id": "white_t",
+            #                     "title": "White T-Shirt",
+            #                     "description": "Solid white Polycot T-Shirt"
+            #                     },
+            #                     {
+            #                     "id": "black_t",
+            #                     "title": "Black T-Shirt",
+            #                     "description": "Solid black Polycot T-Shirt"
+            #                     },
+            #                 ]
+            #                 },
+            #                 {
+            #                 "title": "Shoes",
+            #                 "rows": [
+            #                     {
+            #                     "id": "white_sneakers",
+            #                     "title": "White Sneakers",
+            #                     "description": "Contemporary Classic White Sneakers"
+            #                     },
+            #                     {
+            #                     "id": "black_sneakers",
+            #                     "title": "Black Sneakers",
+            #                     "description": "Contemporary Classic Black Sneakers"
+            #                     },
+            #                 ]
+            #                 }
+            #             ]
+            #             }
+            #         }
+            #     })
+
+            #     response = requests.request("POST", url, headers=headers, data=payload)
+
+            #     print(response.text)
+
+            elif msg != "":
                 raw_msg = generateResponse(msg)
-                if "ImageID" in raw_msg:
-                    clean_txt, imgID = raw_msg.split("[ImageID=")
-                    imgID = imgID[:-1]
-                    print(clean_txt, imgID)
-                    payload = json.dumps({
-                        "to": msg_to,
-                        "type": "image",
-                        "recipient_type": "individual",
-                        "image": {
-                            "link": images[imgID],
-                            "caption": clean_txt
-                        }
-                    })
-                else:
-                    payload = json.dumps({
-                        "to": msg_to,
-                        "type": "text",
-                        "text": {
-                            "body": raw_msg
-                        }
-                    })
+                print(" > Generated Response: ", raw_msg)
+                # if "ImageID" in raw_msg:
+                #     clean_txt, imgID = raw_msg.split("[ImageID=")
+                #     imgID = imgID[:-1]
+                #     print(clean_txt, imgID)
+                #     payload = json.dumps({
+                #         "to": msg_to,
+                #         "type": "image",
+                #         "recipient_type": "individual",
+                #         "image": {
+                #             "link": images[imgID],
+                #             "caption": clean_txt
+                #         }
+                #     })
+                payload = json.dumps({
+                    "to": msg_to,
+                    "type": "text",
+                    "text": {
+                        "body": raw_msg
+                    }
+                })
+                print(" > Generated Payload: ", payload)
                 response = requests.request("POST", url, headers=headers, data=payload)
-                print(response.text)
+                print(" > else - AI : ", response.json())
         return HttpResponse("Webhook received!")
     elif request.method == 'GET':
         print(" > Get request received")
