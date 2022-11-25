@@ -1,0 +1,822 @@
+{
+	"info": {
+		"_postman_id": "7f40dd8a-f1a1-4950-902f-9b8af3e965d6",
+		"name": "Kwiqreply Messaging API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14584062"
+	},
+	"item": [
+		{
+			"name": "1. Messages",
+			"item": [
+				{
+					"name": "1.1 Session Messages",
+					"item": [
+						{
+							"name": "Text Message",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AuthToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\t\"to\" : \"{{whatsapp_number}}\" ,\r\n\t\"type\" : \"text\" ,\r\n\t\"text\" : {\r\n        \"body\" : \"<Message body>\"\r\n        }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/messages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Text Message with URL preview",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AuthToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\t\"to\" : \"{{whatsapp_number}}\" ,\r\n\t\"type\" : \"text\" ,\r\n\t\"text\" : {\"body\" : \"<Message>\"},\r\n     \"preview_url\": true\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/messages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Message",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AuthToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"to\": \"{{whatsapp_number}}\",\r\n    \"recipient_type\": \"individual\",\r\n    \"type\": \"interactive\",\r\n    \"interactive\": {\r\n        \"type\": \"list\",\r\n        \"header\": {\r\n            \"type\": \"text\",\r\n            \"text\": \"<Header List Message>\"\r\n        },\r\n        \"body\": {\r\n            \"text\": \"<List Body Message>\"\r\n        },\r\n        \"footer\": {\r\n            \"text\": \"<Footer Message>\"\r\n        },\r\n        \"action\": {\r\n            \"button\": \"Send\",\r\n            \"sections\": [\r\n                {\r\n                    \"title\": \"<Section 1>\",\r\n                    \"rows\": [\r\n                        {\r\n                            \"id\": \"<ID 1.1>\",\r\n                            \"title\": \"<Title 1.1>\",\r\n                            \"description\": \"<Description 1.1>\"\r\n                        },\r\n                        {\r\n                            \"id\": \"<ID 1.2>\",\r\n                            \"title\": \"<Title 1.2>\",\r\n                            \"description\": \"<Description 1.2>\"\r\n                        }\r\n                    ]\r\n                },\r\n                {\r\n                    \"title\": \"Section 2>\",\r\n                    \"rows\": [\r\n                        {\r\n                            \"id\": \"<ID 2.1>\",\r\n                            \"title\": \"<Title 2.1>\",\r\n                            \"description\": \"<Description 2.1>\"\r\n                        },\r\n                        {\r\n                            \"id\": \"<ID 2.2>\",\r\n                            \"title\": \"<Title 2.2>\",\r\n                            \"description\": \"<Description 2.2>\"\r\n                        }\r\n                    ]\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/messages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Button Message",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AuthToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"to\": \"{{whatsapp_number}}\",\r\n    \"recipient_type\": \"individual\",\r\n    \"type\": \"interactive\",\r\n    \"interactive\": {\r\n        \"type\": \"button\",\r\n        \"header\": {\r\n            \"type\": \"text\",\r\n            \"text\": \"<Header Text>\"\r\n        },\r\n        \"body\": {\r\n            \"text\": \"<Body Text>\"\r\n        },\r\n        \"footer\": {\r\n            \"text\": \"<Footer Text>\"\r\n        },\r\n        \"action\": {\r\n            \"buttons\": [\r\n                {\r\n                    \"type\": \"reply\",\r\n                    \"reply\": {\r\n                        \"id\": \"<Button 1 Text>\",\r\n                        \"title\": \"<Button 1>\"\r\n                    }\r\n                },\r\n                {\r\n                    \"type\": \"reply\",\r\n                    \"reply\": {\r\n                        \"id\": \"<Button 2 Text>\",\r\n                        \"title\": \"<Button 2>\"\r\n                    }\r\n                },\r\n                {\r\n                    \"type\": \"reply\",\r\n                    \"reply\": {\r\n                        \"id\": \"<Button 3 Text>\",\r\n                        \"title\": \"<Button 3>\"\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/messages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Image Message",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AuthToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"to\": \"{{whatsapp_number}}\",\r\n    \"type\": \"image\",\r\n    \"recipient_type\": \"individual\",\r\n    \"image\": {\r\n        \"link\": \"<Link to Image, https>\",\r\n        \"caption\": \"<Media Caption>\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/messages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Document Message",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AuthToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"to\": \"{{whatsapp_number}}\",\r\n    \"type\": \"document\",\r\n    \"recipient_type\": \"individual\",\r\n    \"document\": {\r\n        \"caption\": \"<Message Caption>\",\r\n        \"link\": \"<Link to PDF, https>\",\r\n        \"filename\": \"<Filename>\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/messages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Audio Message",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AuthToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"to\": \"{{whatsapp_number}}\",\r\n    \"type\": \"audio\",\r\n    \"recipient_type\": \"individual\",\r\n    \"audio\": {\r\n        \"link\": \"<Link to Audio, https>\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/messages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Video Message",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AuthToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"to\": \"{{whatsapp_number}}\",\r\n    \"type\": \"video\",\r\n    \"recipient_type\": \"individual\",\r\n    \"video\": {\r\n        \"caption\": \"<Message Caption>\",\r\n        \"link\": \"<Link to Video, https>\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/messages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Contact Message",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AuthToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"to\": \"{{whatsapp_number}}\",\r\n  \"type\": \"contacts\",\r\n  \"recipient_type\": \"individual\",\r\n  \"contacts\": [\r\n  \t{\r\n  \t\t\"addresses\": [\r\n  \t\t\t{\r\n  \t\t\t\t\"city\": \"<Contact's City>\",\r\n  \t\t\t\t\"country\": \"<Contact's Country>\",\r\n  \t\t\t\t\"country_code\": \"<Contact's Country Code>\",\r\n  \t\t\t\t\"state\": \"<Contact's State>\",\r\n  \t\t\t\t\"street\": \"<Contact's Street>\",\r\n  \t\t\t\t\"type\": \"<Contact's Address Type>\",\r\n  \t\t\t\t\"zip\": \"<Contact's Zip Code>\"\r\n  \t\t\t}\r\n  \t\t],\r\n  \t\t\"birthday\": \"<Contact's Birthday>\",\r\n  \t\t\"emails\": [\r\n  \t\t\t{\r\n  \t\t\t\t\"email\": \"<Contact's Email>\",\r\n  \t\t\t\t\"type\": \"<Contact's Email Type>\"\r\n  \t\t\t}\r\n  \t\t],\r\n  \t\t\"ims\": [],\r\n  \t\t\"name\": {\r\n  \t\t\t\"first_name\": \"<Contact's First Name>\",\r\n  \t\t\t\"formatted_name\": \"<Contact's Formatted Name>\",\r\n  \t\t\t\"last_name\": \"<Contact's Last Name>\"\r\n  \t\t},\r\n  \t\t\"org\": {\r\n  \t\t\t\"company\": \"<Contact's Company>\"\r\n  \t\t},\r\n  \t\t\"phones\": [\r\n  \t\t\t{\r\n  \t\t\t\t\"phone\": \"<Contact's Phone Number>\",\r\n  \t\t\t\t\"type\": \"<Contact's Phone Number Type>\"\r\n  \t\t\t}\r\n  \t\t],\r\n  \t\t\"urls\": []\r\n  \t}\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/messages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Location Message",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AuthToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"to\": \"{{whatsapp_number}}\",\r\n  \"type\": \"location\",\r\n  \"recipient_type\": \"individual\",\r\n  \"location\": {\r\n    \"longitude\": \"<Longitude>\",\r\n    \"latitude\": \"<Latitude>\",\r\n    \"name\": \"<Location Name>\",\r\n    \"address\": \"<Location's Address>\"\r\n  }\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/messages",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"messages"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "1.2 Template Message",
+					"item": [
+						{
+							"name": "Send Template",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n                \"company-name\" : \"<Company Name>\",\n                \"event-data\": {\n                    \"event-name\" : \"<Event Name>\",\n                    \"event-id\": \"<Event ID>\"\n                },\n                \"parameters\":{\n                    \"phone-number\":\"<phone no with country code>\",\n                    \"variables\":[\"<variables>\"],\n                    \"url-variable\":\"<url-endpoint>\",\n                    \"header\" : {\n                        \"link\" : \"<If it contains media then link of media>\",\n                    \"filename\":\"<required if the media type is of document type>\"\n                    }\n                }\n            }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://app.kwiqreply.io/v2.0/trigger_event?token={{token}}",
+									"protocol": "https",
+									"host": [
+										"app",
+										"kwiqreply",
+										"io"
+									],
+									"path": [
+										"v2.0",
+										"trigger_event"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "2. Media",
+			"item": [
+				{
+					"name": "Retrieve Media using ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AuthToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"media-id\":\"<Media-id>\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/media",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"media"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Media",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AuthToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": ""
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/media",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"media"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Templates",
+			"item": [
+				{
+					"name": "Retrieve All Tempalates",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AuthToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "event-id",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/api/message_templates",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"message_templates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Templates",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AuthToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"<template name>\",\r\n    \"language\":\"<template language code>\",\r\n    \"category\":\"<template category>\",\r\n    \"components\":[\r\n        {\r\n            \"type\": \"BODY\",\r\n            \"text\": \"<body>\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/message_templates",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"message_templates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retreive Templates using Media ID",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AuthToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{url}}/api/message_templates?event-id={{event-id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"message_templates"
+							],
+							"query": [
+								{
+									"key": "event-id",
+									"value": "{{event-id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Check Contact",
+			"item": [
+				{
+					"name": "Check-Contact",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AuthToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"blocking\": \"wait\",\n   \"contacts\": [\n      \"{{Recipient-WA-ID}}\"\n   ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/check_contacts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"check_contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check-Contact-Async",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AuthToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"contacts\": [\n      \"{{Recipient-WA-ID}}\"\n   ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/check_contacts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"check_contacts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Webhook",
+			"item": [
+				{
+					"name": "get webhook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AuthToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/webhook",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"webhook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update webhook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AuthToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"webhooks\":{\n        \"url\" : \"<webhook url>\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/webhook",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"webhook"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Contacts",
+			"item": [
+				{
+					"name": "6.1 Create or Update a Contact",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AuthToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"country_code\":\"91\",\n    \"phone_no\":\"123456789\",\n    \"segments\":[\"segment1\",\"segment2\"],\n    \"opted_in\":true,\n    \"first_name\":\"John\",\n    \"last_name\":\"Wick\",\n    \"email\":\"john.wick@gmail.com\",\n    \"gender\":\"male\",\n    \"age\":\"22\",\n    \"dob\":\"1995-12-30\",\n    \"company\":\"XYZ\",\n    \"address\":\"mumbai\",\n    \"city\":\"mumbai\",\n    \"state\":\"Maharastra\",\n    \"country\":\"India\",\n    \"pincode\":\"411023\",\n    \"occupation\":\"student\",\n    \"custom_attr1\":\"2nd Year\",\n    \"custom_attr2\":\"BCom\",\n    \"custom_attr3\":\"BCom\",\n    \"custom_attr4\":\"BCom\",\n    \"custom_attr5\":\"BCom\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/contacts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
