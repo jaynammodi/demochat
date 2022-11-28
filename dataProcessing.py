@@ -69,8 +69,114 @@ def getProductTD():
         all_prods.append(" | ".join(cur_str))
     return all_prods
 
+def buildCatalog():
+    global catalog, product_db
+    catalog = {}
+
+    for x in product_db:
+        if x["Category"] not in catalog.keys():
+            catalog[x["Category"]] = {
+            "title": x["Category"],
+            "rows": [
+                {
+                "id": x["Handle"],
+                "title": x["Title"],
+                "description": "{} | {}".format(x["Desc"], x["Price"])
+                },
+            ]
+        }
+        else:
+            catalog[x["Category"]]["rows"].append({
+                "id": x["Handle"],
+                "title": x["Title"],
+                "description": "{} | {}".format(x["Desc"], x["Price"])
+            })           
+    return catalog
+
+def buildOffers():
+    global offers_db, product_db
+    offers = {}
+
+    for x in offers_db:
+        if x["Product"] not in offers.keys():
+            offers[x["Product"]] = {
+                "title": x["Product"],
+                "rows": [
+                    {
+                    "id": x["Offer"],
+                    "title": x["Offer"],
+                    "description": x["Desc"]
+                    },
+                ]
+            }
+        else:
+            offers[x["Product"]]["rows"].append({
+                "id": x["Offer"],
+                "title": x["Offer"],
+                "description": x["Desc"]
+            })
+
+
+    payload = json.dumps({
+            "to": "<WHOEVER>",
+            "recipient_type": "individual",
+            "type": "interactive",
+            "interactive": {
+                "type": "list",
+                "header": {
+                "type": "text",
+                "text": "Shopping Menu - Sample"
+                },
+                "body": {
+                "text": "Hi {}, welcome to our store, please choose a product you want to know more about:".format(user_details['name'])
+                },
+                "footer": {
+                "text": "Click on view products to see!"
+                },
+                "action": {
+                "button": "View Products",
+                "sections": [
+                    {
+                    "title": "Clothes",
+                    "rows": [
+                        {
+                        "id": "white_t",
+                        "title": "White T-Shirt",
+                        "description": "Solid white Polycot T-Shirt"
+                        },
+                        {
+                        "id": "black_t",
+                        "title": "Black T-Shirt",
+                        "description": "Solid black Polycot T-Shirt"
+                        },
+                    ]
+                    },
+                    {
+                    "title": "Shoes",
+                    "rows": [
+                        {
+                        "id": "white_sneakers",
+                        "title": "White Sneakers",
+                        "description": "Contemporary Classic White Sneakers"
+                        },
+                        {
+                        "id": "black_sneakers",
+                        "title": "Black Sneakers",
+                        "description": "Contemporary Classic Black Sneakers"
+                        },
+                    ]
+                    }
+                ]
+                }
+            }
+        })
+        # print(" > Generated Payload: ", payload)
+    
 buildStoreDBS("sample_data/")
 pprint(getStoreDetails())
 for x in getProductTD():
     print(x)
+
+pprint(buildCatalog())
 # pprint(getProductTD())
+    

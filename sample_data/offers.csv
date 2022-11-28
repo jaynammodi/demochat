@@ -1,2 +1,2 @@
-Name,Value,Value Type,Type,Discount Class,Minimum Purchase Requirements,Combines with Order Discounts,Combines with Product Discounts,Combines with Shipping Discounts,Customer Selection,Times Used In Total,Applies Once Per Customer,Usage Limit Per Code,Status,Start,End
-6HYT6ZTB7RBF,-20.0,percentage,Amount Off,product,499.0,,,,all,0,1,,Active,2022-11-28 16:39:35 +0530,
+Name,Value,Value Type,Type,Discount Class,product,Minimum Purchase Requirements,Combines with Order Discounts,Combines with Product Discounts,Combines with Shipping Discounts,Customer Selection,Times Used In Total,Applies Once Per Customer,Usage Limit Per Code,Status,Start,End
+6HYT6ZTB7RBF,-20,percentage,Amount Off,product,t-shirt-1,499,,,,all,0,1,,Active,2022-11-28 16:39:35 +0530,
