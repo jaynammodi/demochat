@@ -5,60 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from pprint import pprint
 from time import sleep
 
-import json, requests, openai, re, csv
-
-
-
-
-# DATA PROCESSING
-def cleanDB(db):
-    db = {k: v for k, v in db.items() if v != ""}
-    return db
-
-def parseCSV(filepath):
-    with open(filepath, mode='r') as infile:
-        mydict = {rows[0]:rows[1] for rows in csv.reader(infile)}
-    return mydict
-        
-def buildProductDB(filepath):
-    global product_db
-    product_db = cleanDB(parseCSV(filepath))
-
-def buildCustomerDB(filepath):
-    global customer_db
-    customer_db = cleanDB(parseCSV(filepath))
-
-def buildOrdersDB(filepath):
-    global order_db
-    order_db = cleanDB(parseCSV(filepath))
-
-def buildOffersDB(filepath):
-    global offers_db
-    offers_db = cleanDB(parseCSV(filepath))
-
-def buildStoreDetails():
-    global store_details
-    store_details = {
-        "name": "Flipkart",
-        "address": "Bengaluru, Karnataka",
-        "phone": "080 4666 4666",
-        "email": "jaynam@kwiqreply.io",
-        "website": "https://www.flipkart.com/"
-    }
-
-def buildStoreDBS(dir):
-    buildProductDB(dir + "products.csv")
-    buildCustomerDB(dir + "customers.csv")
-    buildOrdersDB(dir + "orders.csv")
-    buildOffersDB(dir + "offers.csv")
-    buildStoreDetails()
-
-
-    
-
-
-
-# MAIN CHAT
+import json, requests, openai, re
 
 flag = 0
 
