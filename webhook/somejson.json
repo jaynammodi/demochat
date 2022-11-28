@@ -1,0 +1,33 @@
+{
+    "recipient_type": "individual",
+    "to": "917990326788",
+    "type": "interactive",
+    "interactive": {
+        "type": "list",
+        "body": {
+            "text": "How can I assist you with your delivered order:\n\n👉Order not received\n👉Partial Order Delivered\n👉Talk To Agent"
+        },
+        "action": {
+            "button": "Select Menu here",
+            "sections": [
+                {
+                    "title": "Help Menu",
+                    "rows": [
+                        {
+                            "id": "MainMenuOption1",
+                            "title": "Order not received"
+                        },
+                        {
+                            "id": "MainMenuOption2",
+                            "title": "Partial Order Delivered"
+                        },
+                        {
+                            "id": "MainMenuOption3",
+                            "title": "Talk To Agent"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
