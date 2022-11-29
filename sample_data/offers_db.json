@@ -1,0 +1,16 @@
+[
+    {
+        "Name": "6HYT6ZTB7RBF",
+        "Value": -20,
+        "Value Type": "percentage",
+        "Type": "Amount Off",
+        "Discount Class": "product",
+        "product": "t-shirt-1",
+        "Minimum Purchase Requirements": 499,
+        "Customer Selection": "all",
+        "Times Used In Total": 0,
+        "Applies Once Per Customer": 1,
+        "Status": "Active",
+        "Start": "2022-11-28 16:39:35 +0530"
+    }
+]

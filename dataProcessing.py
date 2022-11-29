@@ -1,7 +1,26 @@
 
 import json, csv, pandas
 from pprint import pprint
+from pymongo import MongoClient
+import numpy as np
 
+
+client = MongoClient("mongodb+srv://voldemort:<password>@aicluster.wf8teze.mongodb.net/?retryWrites=true&w=majority")
+db = client.test
+
+class NpEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        if isinstance(obj, np.bool_):
+            return int(obj)
+        return super(NpEncoder, self).default(obj)
+
+# Your codes .... 
 
 
 
@@ -174,9 +193,17 @@ def buildOffers():
     
 buildStoreDBS("sample_data/")
 pprint(getStoreDetails())
-for x in getProductTD():
-    print(x)
+# open("sample_data/store_db.json", "w").write(json.dumps(getStoreDetails(), indent=4, cls=NpEncoder))
+open("sample_data/product_db.json", "w").write(json.dumps(product_db, indent=4, cls=NpEncoder))
+open("sample_data/offers_db.json", "w").write(json.dumps(offers_db, indent=4, cls=NpEncoder))
+open("sample_data/customer_db.json", "w").write(json.dumps(customer_db, indent=4, cls=NpEncoder))
+open("sample_data/order_db.json", "w").write(json.dumps(order_db, indent=4, cls=NpEncoder))
 
-pprint(buildCatalog())
+# json.dump(product_db, open("sample_data/product_db.json", "w"), indent=4, cls=NpEncoder)
+
+# for x in getProductTD():
+    # print(x)
+
+# pprint(buildCatalog())
 # pprint(getProductTD())
     

@@ -4,9 +4,11 @@ from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from pprint import pprint
 from time import sleep
-
+from pymongo import MongoClient
 import json, requests, openai, re, csv
 
+client = MongoClient("mongodb+srv://voldemort:<password>@aicluster.wf8teze.mongodb.net/?retryWrites=true&w=majority")
+db = client.test
 
 
 
@@ -100,10 +102,12 @@ target_numbers = ["917990326788"]
 conversation_history = """
 ! Daisy is an AI assistant that works as a salesperson for an apparel store. She has access to the store's inventory and can help you find the right product for you. It's intelligence is limited to the store's inventory and cannot answer any questions beyond its scope.
 ! Store Inventory:
+! -------BEGIN STORE INVENTORY-------
 ! - White T-Shirt - White Polycot TShirt - 1000 INR - 10 in stock - Sizes: S, M, L, XL - PRODUCT_ID: t001"
 ! - Black T-Shirt - Black Polycot TShirt - 1000 INR - 10 in stock - Sizes: S, M, L, XL - PRODUCT_ID: t002"
 ! - White Sneakers - White Sneakers - 2000 INR - 10 in stock - Sizes: 6, 7, 8, 9, 10 - PRODUCT_ID: s001"
 ! - Black Sneakers - Black Sneakers - 2000 INR - 10 in stock - Sizes: 6, 7, 8, 9, 10 - PRODUCT_ID: s002"
+! -------END STORE INVENTORY-------
 
 ! When the user finalises a product, Daisy will send the user a link to the product page on the store's website.
 ! When the user is interested in a product, Daisy will send the user the Image and the Store URL of the product using the keyword "[**INSERT_PRODUCT=PRODUCT_ID**]". Example ->
@@ -277,7 +281,7 @@ def setName(name):
      > Marv:""".format(name)
     
     response = openai.Completion.create(
-        model="text-davinci-002",
+        model="text-davinci-003",
         max_tokens=5,
         prompt=thisPrompt,
         temperature=0.1,

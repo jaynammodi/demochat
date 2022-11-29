@@ -1,0 +1,34 @@
+[
+    {
+        "Handle": "burton-custom-freestyle-151",
+        "Title": "Burton Custom Freestyle 151",
+        "Desc": "Good Snowboard",
+        "Vendor": "Burton",
+        "Category": "Sports",
+        "Type": "Snowboard",
+        "Tags": "Barnes & Noble, Big Air, John's Fav",
+        "Published": 1,
+        "O1": "Title",
+        "O1_value": "Default Title",
+        "SKU": "SN_1",
+        "Qty": 4,
+        "Price": 1500,
+        "Img": "https://m.media-amazon.com/images/I/815mvz5KX9L._AC_SL1500_.jpg"
+    },
+    {
+        "Handle": "t-shirt-1",
+        "Title": "T Shirt",
+        "Desc": "T Shirt with\u00a0half Sleeves",
+        "Vendor": "kwiqreply",
+        "Category": "Clothing",
+        "Type": "T-Shirt",
+        "Tags": "Zara",
+        "Published": 1,
+        "O1": "Size",
+        "O1_value": "M",
+        "SKU": "KR_T1",
+        "Qty": 80,
+        "Price": 500,
+        "Img": "https://cdn.shopify.com/s/files/1/0549/9509/1683/products/istockphoto-1142212002-612x612.jpg?v=1632741459"
+    }
+]
